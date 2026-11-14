@@ -1,0 +1,14 @@
+# The launcher's RetroArch profile
+/profile/
+# Build output. The discs and the card ROM are built, never committed
+build/
+/dist/
+__pycache__/
+/tests/*/cd/
+/tests/*/audio-tracks/
+/tests/*/*.iso
+/tests/*/*.cue
+/src/demo-discs/*/cd/
+/src/demo-discs/*/audio-tracks/
+/src/demo-discs/*/*.iso
+/src/demo-discs/*/*.cue
