@@ -33,7 +33,10 @@ python docker/build.py --source path/to/beetle-saturn
   core is built with `HAVE_CDB_LLE=1`.
 - The library is the checkout's `deps/cd-block-sh1-emulator`. `--library` names another copy of
   the emulator, whose `include/` and `src/` are built instead.
-- Rebuilds are incremental. `--clean` drops the volume first.
+- One volume, `cd-block-sh1-demo-beetle-work`, holds every build: `linux/` and `windows/`, and in
+  each a folder for every checkout and `--library` given, so builds of different sources do not
+  share object files.
+- Rebuilds are incremental. `--clean` drops that build's folder first.
 - With `--windows` it writes `mednafen_saturn_libretro.dll` with LTO on, which Beetle Saturn's
   Makefile leaves off for Windows. The core needs `libwinpthread-1.dll`, which RetroArch's Windows
   builds ship beside `retroarch.exe`.
