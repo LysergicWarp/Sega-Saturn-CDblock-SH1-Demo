@@ -141,6 +141,10 @@ slave_start(void)
  * Brings the SH-1 up: the card firmware loaded from the MPEG card and turned on, its identity
  * checked, every partition emptied with the filters connected as above, and the decompress module
  * uploaded. The module's handle names it in every job.
+ *
+ * Built with DISPATCH_FIRMWARE_FROM_DISC, the card load is left out: a disc extension has put the
+ * firmware in place already, and E0's card load would run the card checks against an empty slot,
+ * which fail and clear it.
  */
 static bool
 sh1_start(const void *package, uint32_t package_bytes)
@@ -148,8 +152,13 @@ sh1_start(const void *package, uint32_t package_bytes)
         uint16_t activations;
         sh1_job_t job;
 
-        if (!sh1_card_load() || !sh1_card_on() || !sh1_identity(&activations) ||
-            !sh1_reset_selector()) {
+#ifndef DISPATCH_FIRMWARE_FROM_DISC
+        if (!sh1_card_load()) {
+                return false;
+        }
+#endif
+
+        if (!sh1_card_on() || !sh1_identity(&activations) || !sh1_reset_selector()) {
                 return false;
         }
 
