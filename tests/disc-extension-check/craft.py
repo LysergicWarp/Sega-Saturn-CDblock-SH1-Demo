@@ -75,14 +75,17 @@ def main():
     if size != payload.stat().st_size:
         sys.exit(f'craft.py: {NAME} is {size} bytes in the image')
     fad = lba + LEAD
-    with open(ISO, 'r+b') as f:
-        header = f.read(0x100)
-        if not header.startswith(b'SEGA SEGASATURN '):
-            sys.exit('craft.py: no Saturn header at the image start')
-        if header[0xF8:0x100] != bytes(8):
-            sys.exit('craft.py: header +0xf8..+0xff already set')
-        f.seek(0xF8)
-        f.write(struct.pack('>II', fad, size))
+    image = bytearray(ISO.read_bytes())
+    if not image.startswith(b'SEGA SEGASATURN '):
+        sys.exit('craft.py: no Saturn header at the image start')
+    if image[0xF8:0x100] != bytes(8):
+        sys.exit('craft.py: header +0xf8..+0xff already set')
+    struct.pack_into('>II', image, 0xF8, fad, size)
+    # The container wrote the image, as root on a POSIX host with Docker Engine, so it cannot be
+    # written in place: the patched image goes into a new file, renamed over it.
+    patched = ISO.with_suffix('.tmp')
+    patched.write_bytes(image)
+    patched.replace(ISO)
     print(f'{ISO.name}: {NAME} at LBA {lba}, FAD {fad} ({fad:#x}), {size} bytes encoded')
 
 
