@@ -22,6 +22,11 @@ with its CD block run by the
 CD-block firmware. The firmware itself is described in the
 [CD-block firmware documentation](https://github.com/LysergicWarp/Sega-Saturn-CDblock-Reverse-Engineering-Documentation).
 
+`disc-scroller`, the scroller without the card, also runs unchanged on consoles whose drive is
+replaced by MODE or Fenrir, two optical drive emulators. There the disc extension installs the card
+firmware, and the SH-1 decrypts the picture's strips as the drive streams them
+([discs without the card](#discs-without-the-card)).
+
 Most of these files were produced while testing and developing the CD-block emulator, and are
 preserved here for demo purposes.
 
@@ -169,6 +174,9 @@ present, so 93 turns the firmware on as it would a card's.
   (B0) and the hardware flag, or the step that failed.
 - The stock firmware runs a disc's extension only for a disc its own check accepts. A burned disc
   therefore needs a drive that passes that check, such as an optical drive emulator.
+- `disc-scroller` runs unchanged on consoles with MODE or Fenrir in place of the drive. The stock
+  firmware accepts the burned disc and runs its extension, `93` turns the firmware on with the slot
+  empty, the cipher module loads, and the SH-1 decrypts the strips as the drive streams them.
 - E0's card load runs the card checks against the empty slot. They fail and clear the firmware, so
   these discs never send it.
 - Each has its own script, run from this directory: `python tests/disc-scroller/craft.py`, and
@@ -185,7 +193,7 @@ present, so 93 turns the firmware on as it would a card's.
 - Not measured on hardware: how fast the SH-1 runs a job, idle or while the drive reads, what a
   data port word costs the SH-2, whether the CD block's interrupt reaches the SCU, and the card
   slot's electrical limits.
-- Times on screen are emulated time. Beetle Saturn's bus sharing between the two SH-2s is
+- In the emulator, times on screen are emulated time. Beetle Saturn's bus sharing between the two SH-2s is
   approximate, with less slowdown than hardware, so runs where processors overlap look better than
   a console would show.
 - In this mode the emulator has no CD audio, reads a changed disc as the old one, and leaves the CD
