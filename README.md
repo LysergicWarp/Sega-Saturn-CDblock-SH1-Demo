@@ -8,11 +8,12 @@ small SH-1 programs, called modules, and run jobs on them while the drive keeps 
 It holds:
 
 - A card firmware in SH-1 assembly, with a second version in C written to be read.
-- Four modules for it: a PRS decompressor, a vertex transform, an XTEA cipher and a particle mover.
+- Five modules for it: a PRS decompressor, a vertex transform, an XTEA cipher, a particle mover,
+  and one that times the SH-1's instructions kind by kind.
 - An SH-2 client for the firmware's commands, and a dispatch that hands jobs to the slave SH-2 and
   to the SH-1 alike.
 - Three discs that use them, and nine check programs.
-- A disc extension that installs the card firmware from the disc, and three discs that use it on a
+- A disc extension that installs the card firmware from the disc, and four discs that use it on a
   console without the card.
 
 The demo runs in an emulator: a
@@ -70,7 +71,7 @@ module may call, and the limits.
 | Path | Contents |
 | --- | --- |
 | `src/card-firmwares/` | The card firmware in assembly and in C, and a minimal firmware that reports its identity and runs a ping job. |
-| `src/modules-asm/` | The four modules. `transform-module.s` carries the notes on SH-1 assembly. |
+| `src/modules-asm/` | The five modules. `transform-module.s` carries the notes on SH-1 assembly. |
 | `src/sh1-client/` | The SH-2's side of the firmware's commands, with the transfers through the data port. |
 | `src/dispatch/` | Jobs on the slave SH-2 and the SH-1 behind one interface. |
 | `src/shell/` | The frame the scroller runs in: text rows, the pad and the toggle. |
@@ -158,7 +159,7 @@ The `.cue` and `.iso` land beside the check's source. `disc-extension-check` has
 
 ## Discs without the card
 
-Three discs under `tests/` run on a console with no MPEG card. Each disc's header names
+Four discs under `tests/` run on a console with no MPEG card. Each disc's header names
 `src/disc-extensions/firmware-boot-asm/` as its disc extension, which the stock firmware runs after
 each accepted disc check. It copies the card firmware to where a card load puts it and marks a card
 present, so 93 turns the firmware on as it would a card's.
@@ -168,6 +169,7 @@ present, so 93 turns the firmware on as it would a card's.
 | `disc-scroller` | The scroller, its cipher module uploaded from the program instead of the card ROM's library. |
 | `disc-bench` | The benchmark, its dispatch built with `DISPATCH_FIRMWARE_FROM_DISC`, which skips the card load. |
 | `disc-particles` | Particles moved by the master, the slave and the SH-1, each on particles of its own, alone and then all three at once, each one's rate together given as a share of its rate alone. A check then compares the three's checksums after the same steps. Nothing crosses the data port. |
+| `disc-sh1-timing` | The cycles the SH-1 takes over each kind of instruction in a module's code, timed on its own clock: 15 kinds, 256 of each, with the drive idle, while it streams into a partition, and while the master also takes those sectors through the data port. |
 
 - At boot each disc sends E0 to check the disc again, so the extension runs for it whatever booted
   before it. A text row near the top shows E1's result, the CD block revision the extension sets
@@ -177,6 +179,9 @@ present, so 93 turns the firmware on as it would a card's.
 - `disc-scroller` runs unchanged on consoles with MODE or Fenrir in place of the drive. The stock
   firmware accepts the burned disc and runs its extension, `93` turns the firmware on with the slot
   empty, the cipher module loads, and the SH-1 decrypts the strips as the drive streams them.
+- `disc-sh1-timing` runs on a console with MODE in place of the drive. Its figures are in the
+  CD-block firmware documentation's
+  [running speed](https://github.com/LysergicWarp/Sega-Saturn-CDblock-Reverse-Engineering-Documentation/blob/main/docs/sh1-execution/mechanisms.md#running-speed).
 - E0's card load runs the card checks against the empty slot. They fail and clear the firmware, so
   these discs never send it.
 - Each has its own script, run from this directory: `python tests/disc-scroller/craft.py`, and
@@ -190,9 +195,9 @@ present, so 93 turns the firmware on as it would a card's.
 - One module is installed at a time, and one job runs at a time.
 - The C firmware lacks the library check. The client works with both, and tells them apart by the
   protocol version AD gives: 2 for the assembly firmware, 1 for the C one.
-- Not measured on hardware: how fast the SH-1 runs a job, idle or while the drive reads, what a
-  data port word costs the SH-2, whether the CD block's interrupt reaches the SCU, and the card
-  slot's electrical limits.
+- Not measured on hardware: what a data port word costs the SH-2, whether the CD block's interrupt
+  reaches the SCU, and the card slot's electrical limits. How fast the SH-1 runs a module's code is
+  measured by `disc-sh1-timing`.
 - In the emulator, times on screen are emulated time. Beetle Saturn's bus sharing between the two SH-2s is
   approximate, with less slowdown than hardware, so runs where processors overlap look better than
   a console would show.
