@@ -12,19 +12,22 @@ as `cdblock.bin`, and Beetle Saturn's own high-level CD block otherwise. Its MPE
 
 ## Building
 
-Clone the fork with its submodule, the emulator library:
+The fork is the demo's `beetle-saturn` submodule, and the emulator library is the fork's own
+submodule. Clone the demo with both:
 
 ```
-git clone --recurse-submodules https://github.com/LysergicWarp/beetle-saturn-libretro-cd-block-emulator beetle-saturn
+git clone --recurse-submodules https://github.com/LysergicWarp/Sega-Saturn-CDblock-SH1-Demo
 ```
 
-Then, from the demo's folder:
+In a clone made without them, `git submodule update --init --recursive` fetches them. Then, from the
+demo's folder:
 
 ```
-python docker/build.py --source path/to/beetle-saturn --windows
-python docker/build.py --source path/to/beetle-saturn
+python docker/build.py --windows
+python docker/build.py
 ```
 
+- `--source` names another checkout of the fork.
 - Output in `build/beetle-windows` and `build/beetle` in the demo's folder. `--output` names
   another place.
 - The image comes from the `Dockerfile` here: Debian 13 pinned by digest, GCC 14, and MinGW-w64

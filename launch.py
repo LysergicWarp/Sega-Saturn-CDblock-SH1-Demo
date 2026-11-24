@@ -170,7 +170,8 @@ def main():
             if path is not None and not path.is_file():
                 raise Failure(f'no file {path}')
         if not options.core.is_file():
-            raise Failure(f'no core at {options.core}: build the fork, or name a core with --core')
+            raise Failure(f'no core at {options.core}: build it with docker/build.py, or name a '
+                          'core with --core')
         if options.retroarch is None:
             found = shutil.which('retroarch')
             if found is None:

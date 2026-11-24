@@ -20,7 +20,8 @@ The demo runs in an emulator: a
 [fork of Beetle Saturn](https://github.com/LysergicWarp/beetle-saturn-libretro-cd-block-emulator)
 with its CD block run by the
 [CD-block emulator](https://github.com/LysergicWarp/Sega-Saturn-CDB-Emulator), which runs the stock
-CD-block firmware. The firmware itself is described in the
+CD-block firmware. The fork is pinned as the submodule `beetle-saturn`, and the emulator as the
+fork's own submodule. The firmware itself is described in the
 [CD-block firmware documentation](https://github.com/LysergicWarp/Sega-Saturn-CDblock-Reverse-Engineering-Documentation).
 
 `disc-scroller`, the scroller without the card, also runs unchanged on consoles whose drive is
@@ -80,13 +81,15 @@ module may call, and the limits.
 | `tests/` | The check programs, each a disc that prints a line per step, and the discs without the card. |
 | `tools/` | Build steps in Python: the card ROM, module packages, the benchmark's data, the cipher. |
 | `docker/` | Builds Beetle Saturn with the emulator library and runs discs headless, with the headless runner's source. |
+| `beetle-saturn/` | The Beetle Saturn fork, a submodule, with the emulator library as its own submodule. |
 
 ## Requirements
 
 - Docker. The SH-2 and SH-1 code builds in a pinned [libyaul](https://github.com/yaul-org/libyaul)
   image, so no toolchain is installed on the host.
 - Python 3 for `build.py`, `launch.py` and the scripts in `docker/`.
-- Git, to clone the Beetle Saturn fork.
+- Git, to clone the demo with its submodules: the Beetle Saturn fork, and the emulator library
+  inside it.
 - An IPL BIOS dump and a CD-block ROM dump. The card firmware is written for CDB105 (SHA-1
   `eb8393058f324e922c11b43709b64fc6ca94ab86`).
 - RetroArch, to run the discs with `launch.py`.

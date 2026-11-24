@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Build the Beetle Saturn fork's core with the CD-block emulator library, in Docker.
 
-The fork's checkout is copied into a Docker volume without its Git metadata and built there with
-HAVE_CDB_LLE=1 and LTO, in the image of the Dockerfile here, so the host needs no toolchain and
-rebuilds are incremental. The library is the checkout's deps/cd-block-sh1-emulator submodule, or
-the folder --library names, whose include/ and src/ then take the submodule's place.
+The fork is the demo's beetle-saturn submodule, or the checkout --source names. It is copied into a
+Docker volume without its Git metadata and built there with HAVE_CDB_LLE=1 and LTO, in the image of
+the Dockerfile here, so the host needs no toolchain and rebuilds are incremental. The library is the
+fork's deps/cd-block-sh1-emulator submodule, or the folder --library names, whose include/ and src/
+then take the submodule's place.
 
 One volume holds every build: a folder for the Linux builds and one for the Windows builds, and in
 each a folder for every checkout and library given, so builds of different sources do not share
@@ -21,11 +22,11 @@ core needs libwinpthread-1.dll, which RetroArch's Windows builds ship beside ret
 Both write revision.txt, the checkout's commit. Docker must be running.
 
 usage:
-  build.py --source CHECKOUT [--windows] [--library DIR] [--output DIR] [--clean]
+  build.py [--windows] [--source CHECKOUT] [--library DIR] [--output DIR] [--clean]
 
 examples:
-  build.py --source ../beetle-saturn
-  build.py --source ../beetle-saturn --windows
+  build.py
+  build.py --windows
   build.py --source ../beetle-saturn --library ../emulator --clean
 """
 
@@ -38,6 +39,11 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 BUILD = HERE.parent / 'build'
+# The fork, a submodule of the demo
+FORK = HERE.parent / 'beetle-saturn'
+# What a missing submodule needs
+SUBMODULES = ('clone the demo with --recurse-submodules, or run git submodule update --init '
+              '--recursive')
 
 IMAGE = 'cd-block-sh1-demo/beetle-build:trixie-1'
 # The work volume, mounted at /work
@@ -85,15 +91,15 @@ def build(source, library, windows, output, clean):
     system, default_output, make_arguments, core = WINDOWS if windows else LINUX
     output = (output or default_output).resolve()
     if not (source / 'Makefile').is_file():
-        raise Failure(f'no Beetle Saturn checkout at {source}')
+        raise Failure(f'no Beetle Saturn checkout at {source}'
+                      + (f': {SUBMODULES}' if source == FORK else ''))
     work = f'/work/{system}/{tree(source, library)}'
     own = library is None
     if own:
         library = source / LIBRARY
     if not (library / 'include').is_dir() or not (library / 'src').is_dir():
-        raise Failure(f'no emulator library at {library}: clone the fork with '
-                      '--recurse-submodules, or name the library with --library' if own else
-                      f'no emulator library at {library}')
+        raise Failure(f'no emulator library at {library}: {SUBMODULES}, or name the library with '
+                      '--library' if own else f'no emulator library at {library}')
     revision = git(source, 'rev-parse', 'HEAD')
     changed = ' with local changes' if git(source, 'status', '--porcelain') else ''
     print(f'Building Beetle {revision}{" for Windows" if windows else ""}{changed} in {work}',
@@ -134,8 +140,9 @@ def main():
     parser = argparse.ArgumentParser(
         usage=argparse.SUPPRESS, description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--source', required=True, type=Path, metavar='CHECKOUT',
-                        help="the fork's checkout, mounted read-only")
+    parser.add_argument('--source', type=Path, default=FORK, metavar='CHECKOUT',
+                        help="the fork's checkout, mounted read-only, by default the demo's "
+                             'beetle-saturn submodule')
     parser.add_argument('--windows', action='store_true',
                         help='cross-build the Windows core instead of the Linux core and runner')
     parser.add_argument('--library', type=Path, metavar='DIR',

@@ -1,0 +1,4 @@
+[submodule "beetle-saturn"]
+	path = beetle-saturn
+	url = https://github.com/LysergicWarp/beetle-saturn-libretro-cd-block-emulator.git
+	branch = cd-block-emulator
