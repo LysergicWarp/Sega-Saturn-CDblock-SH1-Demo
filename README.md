@@ -201,11 +201,11 @@ present, so 93 turns the firmware on as it would a card's.
 - Not measured on hardware: what a data port word costs the SH-2, whether the CD block's interrupt
   reaches the SCU, and the card slot's electrical limits. How fast the SH-1 runs a module's code is
   measured by `disc-sh1-timing`.
-- In the emulator, times on screen are emulated time. Beetle Saturn's bus sharing between the two SH-2s is
-  approximate, with less slowdown than hardware, so runs where processors overlap look better than
-  a console would show.
-- In this mode the emulator has no CD audio, reads a changed disc as the old one, and leaves the CD
-  block out of save states.
+- In the emulator, times on screen are emulated time. Beetle Saturn's bus sharing between the two
+  SH-2s is approximate, with less slowdown than hardware, so runs where processors overlap look
+  better than a console would show.
+- In this mode the emulator leaves the CD block out of save states. Its CD audio has no
+  de-emphasis and leaves out sectors read at double speed.
 
 ## License and credits
 
