@@ -1,6 +1,6 @@
-! Sanity check firmware for the CD-block SH-1's MPEG card slot, CDB105 (SHA-1
-! eb8393058f324e922c11b43709b64fc6ca94ab86). It reports a version, an identity and an activation
-! count, and runs a ping job, enough to show that a card loads, activates and runs work.
+! Sanity check firmware for the CD-block SH-1's MPEG card slot. It reports a version, an identity
+! and an activation count, and runs a ping job, enough to show that a card loads, activates and
+! runs work.
 ! The card checks and the expansion loader load it as they load the known cards, 93 activates it,
 ! it answers commands of its own inside IRQ6 and runs one job at a time in task 9. It uses only the
 ! interface page and the RAM the known cards use. It is the CD-block firmware docs' lifecycle

@@ -90,8 +90,7 @@ module may call, and the limits.
 - Python 3 for `build.py`, `launch.py` and the scripts in `docker/`.
 - Git, to clone the demo with its submodules: the Beetle Saturn fork, and the emulator library
   inside it.
-- An IPL BIOS dump and a CD-block ROM dump. The card firmware is written for CDB105 (SHA-1
-  `eb8393058f324e922c11b43709b64fc6ca94ab86`).
+- An IPL BIOS dump and a CD-block ROM dump.
 - RetroArch, to run the discs with `launch.py`.
 
 ## Build

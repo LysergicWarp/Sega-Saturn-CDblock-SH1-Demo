@@ -1,11 +1,10 @@
-! Card firmware for the CD-block SH-1's MPEG card slot, CDB105 (SHA-1
-! eb8393058f324e922c11b43709b64fc6ca94ab86), that runs modules of SH-1 code the host uploads. The
-! host puts a module's package into a partition with 64, and a load job checks it and installs it in
-! the module slot. AB then submits jobs to the module by the handle the load gave, and task 9 calls
-! it once per pass while the CD tasks go on. The card checks and the expansion loader load it as
-! they load the known cards, and 93 activates it. It uses only the interface page and the RAM the
-! known cards use. It is the CD-block firmware docs' module extension. ../../modules-asm/ has
-! three modules.
+! Card firmware for the CD-block SH-1's MPEG card slot that runs modules of SH-1 code the host
+! uploads. The host puts a module's package into a partition with 64, and a load job checks it and
+! installs it in the module slot. AB then submits jobs to the module by the handle the load gave,
+! and task 9 calls it once per pass while the CD tasks go on. The card checks and the expansion
+! loader load it as they load the known cards, and 93 activates it. It uses only the interface page
+! and the RAM the known cards use. It is the CD-block firmware docs' module extension.
+! ../../modules-asm/ has three modules.
 !
 ! Reading this file. The paragraphs from "Commands" on are the contract, what a host and a module
 ! may rely on. These first notes are for a reader new to the CD block, and
